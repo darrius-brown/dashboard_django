@@ -46,7 +46,7 @@ class AddressSerializer(serializers.ModelSerializer):
         model = Address
         fields = '__all__'
 
-class ClienetSerializer(serializers.ModelSerializer):
+class ClientSerializer(serializers.ModelSerializer):
     address = AddressSerializer()
     company = CompanySerializer()
     
