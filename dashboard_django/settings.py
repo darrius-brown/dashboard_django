@@ -12,8 +12,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
-import dj_database_url
 import os
+import dj_database_url
+
 # from dotenv import load_dotenv
 
 # load_dotenv()
@@ -56,8 +57,8 @@ REST_FRAMEWORK = {
     }
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
