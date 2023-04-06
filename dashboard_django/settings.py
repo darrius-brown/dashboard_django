@@ -26,10 +26,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = 'sfo8972qb3hraw0edf9ju9045067^yq2138heaniwejoy78adrgq21vvx@3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if os.environ['MODE'] == 'dev' else False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -95,7 +95,13 @@ WSGI_APPLICATION = 'dashboard_django.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-  'default': dj_database_url.config(conn_max_age=600)
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dashboard',
+        'USER': 'dashboarduser',
+        'PASSWORD': 'dashboard',
+        'HOST': 'localhost'
+    }
 }
 
 SIMPLE_JWT = {
