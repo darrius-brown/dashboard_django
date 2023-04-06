@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import Address, Company, Client
+from .models import Address, Client
 
 UserModel = User
 
@@ -36,10 +36,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['username'] = user.username
         return token
 
-class CompanySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Company
-        fields = '__all__'
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
@@ -48,7 +44,6 @@ class AddressSerializer(serializers.ModelSerializer):
 
 class ClientSerializer(serializers.ModelSerializer):
     address = AddressSerializer()
-    company = CompanySerializer()
     
     class Meta:
         model = Client
