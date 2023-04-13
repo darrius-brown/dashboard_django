@@ -58,3 +58,20 @@ class ClientDetail(generics.RetrieveUpdateDestroyAPIView):
 
   def delete(self, request, *args, **kwargs):
     return self.destroy(request, *args, **kwargs)
+  
+class InvoiceDetail(generics.RetrieveUpdateDestroyAPIView):
+    
+  serializer_class = InvoiceSerializer
+  permission_classes = [permissions.AllowAny]
+
+  def get_queryset(self):
+        user_id = self.kwargs['user_id']
+        queryset = Invoice.objects.filter(supplier=user_id)
+        return queryset
+
+  def put(self, request, *args, **kwargs):
+    print(request)
+    return self.update(request, *args, **kwargs)
+
+  def delete(self, request, *args, **kwargs):
+    return self.destroy(request, *args, **kwargs)
