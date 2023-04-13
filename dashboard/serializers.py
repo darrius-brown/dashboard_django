@@ -42,11 +42,6 @@ class AddressSerializer(serializers.ModelSerializer):
         model = Address
         fields = '__all__'
 
-class InvoiceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Invoice
-        fields = '__all__'
-
 class ClientSerializer(serializers.ModelSerializer):
     address = AddressSerializer()
     supplier = UserSerializer()
@@ -54,3 +49,11 @@ class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
         fields = '__all__'
+
+class InvoiceSerializer(serializers.ModelSerializer):
+    supplier = UserSerializer()
+    client = ClientSerializer()
+    class Meta:
+        model = Invoice
+        fields = '__all__'
+
