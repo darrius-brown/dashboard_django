@@ -32,8 +32,18 @@ class InvoiceListByUser(generics.ListCreateAPIView,):
         queryset = Invoice.objects.filter(supplier=user_id)
         return queryset
 
+class InvoiceListByUserAndClient(generics.ListCreateAPIView,):
+  serializer_class = InvoiceSerializer
+  permission_classes = [permissions.AllowAny]
+  
+  def get_queryset(self):
+        user_id = self.kwargs['user_id']
+        client_id = self.kwargs['client_id']
+        queryset = Invoice.objects.filter(supplier=user_id, client=client_id)
+        return queryset
 
 class ClientDetail(generics.RetrieveUpdateDestroyAPIView):
+  
   serializer_class = ClientSerializer
   permission_classes = [permissions.AllowAny]
 
