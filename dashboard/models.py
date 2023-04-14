@@ -13,11 +13,11 @@ class Address(models.Model):
         return self.city
     
 class Client(models.Model):
-    supplier = models.ForeignKey(User, related_name='client', on_delete=models.CASCADE)
     name = models.CharField(max_length = 100)
     email = models.CharField(max_length = 100)
-    address = models.ForeignKey(Address, on_delete=models.CASCADE)
     phone = models.CharField(max_length = 100)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    supplier = models.ForeignKey(User, related_name='client', on_delete=models.CASCADE)
     
     def __str__(self):
         return self.name
@@ -25,8 +25,8 @@ class Client(models.Model):
 class Invoice(models.Model):
     supplier = models.ForeignKey(User, related_name='invoice', on_delete=models.CASCADE)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    paid = models.BooleanField(default=False)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    paid = models.BooleanField(default=False)
     create_date =  models.DateTimeField(auto_now_add=True)
     due_date = models.DateField(default=datetime.now() + timedelta(weeks=2))
 
