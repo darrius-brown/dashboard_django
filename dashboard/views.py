@@ -1,4 +1,5 @@
 from rest_framework import generics, permissions
+from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model, authenticate, logout, login
 from .serializers import UserSerializer, ClientSerializer, InvoiceSerializer
 from .models import Client, Invoice
@@ -75,3 +76,12 @@ class InvoiceDetail(generics.RetrieveUpdateDestroyAPIView):
 
   def delete(self, request, *args, **kwargs):
     return self.destroy(request, *args, **kwargs)
+  
+class UserDetail(generics.RetrieveAPIView):
+  serializer_class = UserSerializer
+  queryset = User.objects.all()
+  permission_classes = [permissions.AllowAny]
+
+
+
+   
