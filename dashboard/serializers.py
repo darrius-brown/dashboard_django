@@ -34,7 +34,14 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super(MyTokenObtainPairSerializer, cls).get_token(user)
 
         token['username'] = user.username
-        return [token, user]
+        return token
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        serializer = UserSerializer(self.user)
+        data['user'] = serializer.data
+        data['token'] = self.get_token(self.user)
+        return data
 
 
 class AddressSerializer(serializers.ModelSerializer):
