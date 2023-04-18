@@ -4,6 +4,11 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import Address, Client, Invoice
+# from rest_framework.response import Response
+# from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+# from rest_framework.response import Response
+# from rest_framework import status
+
 
 UserModel = User
 
@@ -28,20 +33,35 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', "password", 'first_name', 'last_name', 'email')
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    user = serializers.SerializerMethodField()
 
-    @classmethod
-    def get_token(cls, user):
-        token = super(MyTokenObtainPairSerializer, cls).get_token(user)
+    def get_user(self, obj):
+        user = User.objects.get(id=obj['user_id'])
+        return {
+            'username': user.username,
+            'email': user.email,
+            # Add any other user information you want to include here
+        }
 
-        token['username'] = user.username
-        return token
+    # def validate(self, attrs):
+    #     data = super().validate(attrs)
+    #     data['user'] = self.get_user(data)
+    #     return data['user']['username']
+    
+# class MyTokenObtainPairView(TokenObtainPairView):
+#     def post(self, request, *args, **kwargs):
+#         # Call the parent class's post method to obtain the token pair
+#         response = super().post(request, *args, **kwargs)
 
-    def validate(self, attrs):
-        data = super().validate(attrs)
-        serializer = UserSerializer(self.user)
-        data['user'] = serializer.data
-        data['token'] = self.get_token(self.user)
-        return data
+#         # Add the user information to the response data
+#         user = User.objects.get(id=['user_id'])
+#         response.data['user'] = {
+#             'username': user.username,
+#             'email': user.email,
+#             # Add any other user information you want to include here
+#         }
+
+#         return response
 
 
 class AddressSerializer(serializers.ModelSerializer):

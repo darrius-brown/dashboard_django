@@ -1,9 +1,12 @@
 from rest_framework import generics, permissions
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model, authenticate, logout, login
-from .serializers import UserSerializer, ClientSerializer, InvoiceSerializer
+from .serializers import UserSerializer, ClientSerializer, InvoiceSerializer, MyTokenObtainPairSerializer
 from .models import Client, Invoice
+from rest_framework_simplejwt.views import TokenObtainPairView
 
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
 
 class CreateUser(generics.CreateAPIView):
     model = get_user_model()
