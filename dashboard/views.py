@@ -1,12 +1,13 @@
 from rest_framework import generics, permissions
+from rest_framework.response import Response
 from django.contrib.auth.models import User
-from django.contrib.auth import get_user_model, authenticate, logout, login
-from .serializers import UserSerializer, ClientSerializer, InvoiceSerializer, MyTokenObtainPairSerializer
-from .models import Client, Invoice
+from django.contrib.auth import get_user_model
+from .serializers import UserSerializer, ClientSerializer, InvoiceSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
-
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
+from .models import Client, Invoice
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.contrib.auth import authenticate
 
 class CreateUser(generics.CreateAPIView):
     model = get_user_model()
@@ -85,6 +86,29 @@ class UserDetail(generics.RetrieveAPIView):
   queryset = User.objects.all()
   permission_classes = [permissions.AllowAny]
 
+class LoginView(TokenObtainPairView):
+    serializer_class = TokenObtainPairSerializer
 
+    def post(self, request, *args, **kwargs):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is None:
+            return Response({'error': 'Invalid username/password'}, status=400)
+
+        refresh = RefreshToken.for_user(user)
+
+        data = {
+            'user_id': user.id,
+            'email': user.email,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
+
+        return Response(data)
 
    
