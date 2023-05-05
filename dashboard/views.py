@@ -47,6 +47,24 @@ class InvoiceListByUserAndClient(generics.ListCreateAPIView,):
         queryset = Invoice.objects.filter(supplier=user_id, client=client_id)
         return queryset
 
+class InvoiceListByUserAndPaid(generics.ListCreateAPIView):
+  serializer_class = InvoiceSerializer
+  permission_classes = [permissions.AllowAny]
+
+  def get_queryset(self):
+        user_id = self.kwargs['user_id']
+        queryset = Invoice.objects.filter(supplier=user_id, paid=True)
+        return queryset
+
+class InvoiceListByUserAndUnpaid(generics.ListCreateAPIView):
+  serializer_class = InvoiceSerializer
+  permission_classes = [permissions.AllowAny]
+
+  def get_queryset(self):
+        user_id = self.kwargs['user_id']
+        queryset = Invoice.objects.filter(supplier=user_id, paid=False)
+        return queryset
+
 class ClientDetail(generics.RetrieveUpdateDestroyAPIView):
   
   serializer_class = ClientSerializer
@@ -93,6 +111,8 @@ class LoginView(TokenObtainPairView):
         username = request.data.get('username')
         password = request.data.get('password')
 
+        if not username:
+           return Response('Username can\'t be blank.')
         user = authenticate(request, username=username, password=password)
 
         if user is None:
