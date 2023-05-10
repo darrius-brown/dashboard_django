@@ -42,18 +42,14 @@ class ClientSerializer(serializers.ModelSerializer):
     def create (self, validated_data):
         print(validated_data)
         address_data = validated_data.pop('address')
-        user_data = validated_data.pop('supplier')
+        user_id = self.context.get('user_id')
+        print('user_id:', user_id)
 
         address_serializer = AddressSerializer(data=address_data)
         address_serializer.is_valid(raise_exception=True)
         address = address_serializer.save()
 
-        # user_serializer = UserSerializer(data=user_data)
-        # user_serializer.is_valid(raise_exception=True)
-        # user = user_serializer.save()
-
-        user_id = user_data.get('id')
-        user = User.objects.get(id=1)
+        user = User.objects.get(id=user_id)
 
         client = Client.objects.create(
             address=address, 

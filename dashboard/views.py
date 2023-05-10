@@ -18,22 +18,13 @@ class CreateUser(generics.CreateAPIView):
 class CreateClient(generics.CreateAPIView):
     serializer_class = ClientSerializer
 
-    def create(self, validated_data, **kwargs):
-        user_id = kwargs['user_id']
-        try:
-            user = User.objects.get(id=user_id)
-        except User.DoesNotExist:
-            return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
-        
-        # Add the user_id to the validated data to create the Client object
-        print(validated_data)
-        
-        serializer = self.get_serializer(data=validated_data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+    def post(self, request, user_id, format=None):
+        serializer = ClientSerializer(data=request.data, user_id=user_id)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
   
 class ClientList(generics.ListCreateAPIView):
   serializer_class = ClientSerializer
