@@ -25,6 +25,21 @@ class UserSerializer(serializers.ModelSerializer):
         model = UserModel
         fields = ('id', 'username', "password", 'first_name', 'last_name', 'email')
 
+class SupplierSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+
+        supplier = UserModel.objects.create_user(
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+            email=validated_data['email'],
+        )
+
+        return supplier
+    
+    class Meta:
+        model = User
+        fields = ('username', 'email')
+
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
@@ -33,7 +48,26 @@ class AddressSerializer(serializers.ModelSerializer):
 class ClientSerializer(serializers.ModelSerializer):
     address = AddressSerializer()
     supplier = UserSerializer()
-    
+    def create (self, validated_data):
+        print(validated_data)
+        address_data = validated_data.pop('address')
+        user_data = validated_data.pop('supplier')
+
+        address_serializer = AddressSerializer(data=address_data)
+        address_serializer.is_valid(raise_exception=True)
+        address = address_serializer.save()
+
+        user_serializer = UserSerializer(data=user_data)
+        user_serializer.is_valid(raise_exception=True)
+        user = user_serializer.save()
+
+        client = Client.objects.create(
+            address=address, 
+            supplier=user, 
+            **validated_data)
+        
+        return client
+
     class Meta:
         model = Client
         fields = '__all__'

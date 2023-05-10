@@ -1,4 +1,5 @@
 from rest_framework import generics, permissions
+from rest_framework import status
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
@@ -14,6 +15,26 @@ class CreateUser(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.AllowAny]
 
+class CreateClient(generics.CreateAPIView):
+    serializer_class = ClientSerializer
+
+    def create(self, validated_data, **kwargs):
+        user_id = kwargs['user_id']
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Add the user_id to the validated data to create the Client object
+        print(validated_data)
+        
+        serializer = self.get_serializer(data=validated_data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+  
 class ClientList(generics.ListCreateAPIView):
   serializer_class = ClientSerializer
   queryset = Client.objects.all()
