@@ -27,7 +27,20 @@ class CreateClient(generics.CreateAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class ClientListByUser(generics.ListCreateAPIView,):
+class CreateInvoice(generics.CreateAPIView):
+    serializer_class = InvoiceSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request, user_id, client_id, format=None):
+        user_id = self.kwargs['user_id']
+        client_id = self.kwargs['client_id']
+        serializer = InvoiceSerializer(data=request.data, context={'user_id': user_id, 'client_id': client_id})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ClientListByUser(generics.ListAPIView,):
   serializer_class = ClientSerializer
   permission_classes = [permissions.AllowAny]
   
@@ -36,7 +49,7 @@ class ClientListByUser(generics.ListCreateAPIView,):
         queryset = Client.objects.filter(supplier=user_id)
         return queryset
 
-class InvoiceListByUser(generics.ListCreateAPIView,):
+class InvoiceListByUser(generics.ListAPIView,):
   serializer_class = InvoiceSerializer
   permission_classes = [permissions.AllowAny]
   
@@ -45,7 +58,7 @@ class InvoiceListByUser(generics.ListCreateAPIView,):
         queryset = Invoice.objects.filter(supplier=user_id)
         return queryset
 
-class InvoiceListByUserAndClient(generics.ListCreateAPIView,):
+class InvoiceListByUserAndClient(generics.ListAPIView,):
   serializer_class = InvoiceSerializer
   permission_classes = [permissions.AllowAny]
   
@@ -55,7 +68,7 @@ class InvoiceListByUserAndClient(generics.ListCreateAPIView,):
         queryset = Invoice.objects.filter(supplier=user_id, client=client_id)
         return queryset
 
-class InvoiceListByUserAndPaid(generics.ListCreateAPIView):
+class InvoiceListByUserAndPaid(generics.ListAPIView):
   serializer_class = InvoiceSerializer
   permission_classes = [permissions.AllowAny]
 
@@ -64,7 +77,7 @@ class InvoiceListByUserAndPaid(generics.ListCreateAPIView):
         queryset = Invoice.objects.filter(supplier=user_id, paid=True)
         return queryset
 
-class InvoiceListByUserAndUnpaid(generics.ListCreateAPIView):
+class InvoiceListByUserAndUnpaid(generics.ListAPIView):
   serializer_class = InvoiceSerializer
   permission_classes = [permissions.AllowAny]
 
