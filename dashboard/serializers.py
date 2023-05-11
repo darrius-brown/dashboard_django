@@ -49,8 +49,8 @@ class ClientSerializer(serializers.ModelSerializer):
         address_serializer.is_valid(raise_exception=True)
         address = address_serializer.save()
 
-        user_id = user_data.get('id')
-        user = User.objects.get(id=1)
+        # user_id = user_data.get('id')
+        user = User.objects.get(id=user_id)
 
         client = Client.objects.create(
             address=address, 
