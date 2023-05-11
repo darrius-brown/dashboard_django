@@ -27,7 +27,6 @@ class CreateClient(generics.CreateAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class ClientListByUser(generics.ListCreateAPIView,):
   serializer_class = ClientSerializer
   permission_classes = [permissions.AllowAny]
