@@ -17,13 +17,15 @@ class CreateUser(generics.CreateAPIView):
 
 class CreateClient(generics.CreateAPIView):
     serializer_class = ClientSerializer
+    permission_classes = [permissions.AllowAny]
 
-    def post(self, request, user_id, format=None):
-        serializer = ClientSerializer(data=request.data, user_id=user_id)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # def post(self, request, user_id, format=None):
+    #     user_id = self.kwargs['user_id']
+    #     serializer = ClientSerializer(data=request.data, user_id=user_id)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
   
 class ClientList(generics.ListCreateAPIView):
