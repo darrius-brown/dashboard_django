@@ -34,7 +34,7 @@ class SupplierSerializer(serializers.ModelSerializer):
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = '__all__'
+        fields = ('id', 'street')
 
 class ClientSerializer(serializers.ModelSerializer):
     address = AddressSerializer()
@@ -45,11 +45,13 @@ class ClientSerializer(serializers.ModelSerializer):
         user_data = validated_data.pop('supplier')
         user_id = self.context.get('user_id')
         
-        address_serializer = AddressSerializer(data=address_data)
-        address_serializer.is_valid(raise_exception=True)
-        address = address_serializer.save()
+        # address_serializer = AddressSerializer(data=address_data)
+        # address_serializer.is_valid(raise_exception=True)
+        # address = address_serializer.save()
 
         user = User.objects.get(id=user_id)
+        address = Address.objects.all()
+        print(address)
 
         client = Client.objects.create(
             address=address, 
