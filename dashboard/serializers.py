@@ -46,6 +46,7 @@ class ClientSerializer(serializers.ModelSerializer):
     address = AddressSerializer()
     supplier = SupplierSerializer()
     
+    #my new create
     def create (self, validated_data):
         address_data = validated_data.pop('address')
         user_data = validated_data.pop('supplier')
