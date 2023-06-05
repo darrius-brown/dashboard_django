@@ -19,6 +19,7 @@ urlpatterns = [
     path('invoices/<int:user_id>/unpaid/', views.InvoiceListByUserAndUnpaid.as_view(), name='invoice_read_by_client'),
     path('invoices/<int:user_id>/unpaid/count', views.InvoiceCountByUserAndUnpaid.as_view(), name='invoice_count_by_client'),
     path('invoices/<int:user_id>/unpaid/sum', views.InvoiceSumByUserAndUnpaid.as_view(), name='invoice_sum_by_client'),
+    path('invoices/<int:user_id>/paid/sum', views.InvoiceSumByUserAndPaid.as_view(), name='invoice_sum_by_client'),
     path('invoices/<int:user_id>/paid/count', views.InvoiceCountByUserAndPaid.as_view(), name='invoice_count_by_client'),
     path('clients/<int:user_id>/<int:pk>/', views.ClientDetail.as_view(), name='client_detail'),
     path('invoices/detail/<int:user_id>/<int:pk>/', views.InvoiceDetail.as_view(), name='invoice_detail'), 
