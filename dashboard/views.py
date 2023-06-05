@@ -9,7 +9,6 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import Client, Invoice
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import authenticate
-#908213
 
 class CreateUser(generics.CreateAPIView):
     model = get_user_model()
@@ -153,4 +152,14 @@ class LoginView(TokenObtainPairView):
 
         return Response(data)
 
+class InvoiceCountByUserAndUnpaid(generics.GenericAPIView):
+  serializer_class = InvoiceSerializer
+  permission_classes = [permissions.AllowAny]
+
+  def get(self, request, *args, **kwargs):
+        user_id = self.kwargs['user_id']
+        queryset = Invoice.objects.filter(supplier=user_id, paid=False)
+        count = queryset.count()
+        return Response({'count': count})
+  
    
