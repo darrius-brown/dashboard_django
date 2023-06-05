@@ -12,6 +12,7 @@ urlpatterns = [
     path('clients/<int:user_id>/', views.ClientListByUser.as_view(), name='client_read'),
     path('clients/<int:user_id>/count', views.ClientCountByUser.as_view(), name='client_count'),
     path('invoices/<int:user_id>/', views.InvoiceListByUser.as_view(), name='invoice_read_by_user'),
+    path('invoices/<int:user_id>/count', views.InvoiceCountByUser.as_view(), name='invoice_count_by_user'),
     path('invoices/<int:user_id>/<int:client_id>/', views.InvoiceListByUserAndClient.as_view(), name='invoice_read_by_client'),
     path('invoices/<int:user_id>/<int:client_id>/count', views.InvoiceCountByUserAndClient.as_view(), name='invoice_count_by_client'),
     path('invoices/<int:user_id>/paid/', views.InvoiceListByUserAndPaid.as_view(), name='invoice_read_by_client'),
