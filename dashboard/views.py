@@ -68,6 +68,17 @@ class InvoiceListByUserAndClient(generics.ListAPIView,):
         queryset = Invoice.objects.filter(supplier=user_id, client=client_id)
         return queryset
 
+class InvoiceCountByUserAndClient(generics.GenericAPIView,):
+  serializer_class = InvoiceSerializer
+  permission_classes = [permissions.AllowAny]
+  
+  def get(self, request, *args, **kwargs):
+        user_id = self.kwargs['user_id']
+        client_id = self.kwargs['client_id']
+        queryset = Invoice.objects.filter(supplier=user_id, client=client_id)
+        count = queryset.count()
+        return Response({'count': count})
+
 class InvoiceListByUserAndPaid(generics.ListAPIView):
   serializer_class = InvoiceSerializer
   permission_classes = [permissions.AllowAny]
