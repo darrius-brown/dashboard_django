@@ -10,6 +10,7 @@ from .models import Client, Invoice
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import authenticate
 from django.db.models import Sum
+from django.db.models import Count
 
 
 class CreateUser(generics.CreateAPIView):
@@ -42,7 +43,7 @@ class CreateInvoice(generics.CreateAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class ClientListByUser(generics.ListAPIView,):
+class ClientListByUser(generics.ListAPIView):
   serializer_class = ClientSerializer
   permission_classes = [permissions.AllowAny]
   
@@ -50,8 +51,18 @@ class ClientListByUser(generics.ListAPIView,):
         user_id = self.kwargs['user_id']
         queryset = Client.objects.filter(supplier=user_id)
         return queryset
+  
+class ClientStateCountByUser(generics.GenericAPIView):
+    serializer_class = ClientSerializer
+    permission_classes = [permissions.AllowAny]
 
-class ClientCountByUser(generics.GenericAPIView,):
+    def get(self,  request, *args, **kwargs):
+        user_id = self.kwargs['user_id']
+        queryset = Client.objects.filter(supplier=user_id).values('address__state').annotate(count=Count('address__state')).order_by('-count')[:5]
+        state_counts = [{'state': item['address__state'], 'count': item['count']} for item in queryset]
+        return Response({'state_counts': state_counts})
+  
+class ClientCountByUser(generics.GenericAPIView):
   serializer_class = ClientSerializer
   permission_classes = [permissions.AllowAny]
   
@@ -61,7 +72,7 @@ class ClientCountByUser(generics.GenericAPIView,):
         count = queryset.count()
         return Response({'count': count})
   
-class InvoiceListByUser(generics.ListAPIView,):
+class InvoiceListByUser(generics.ListAPIView):
   serializer_class = InvoiceSerializer
   permission_classes = [permissions.AllowAny]
   
@@ -70,7 +81,7 @@ class InvoiceListByUser(generics.ListAPIView,):
         queryset = Invoice.objects.filter(supplier=user_id)
         return queryset
 
-class InvoiceCountByUser(generics.GenericAPIView,):
+class InvoiceCountByUser(generics.GenericAPIView):
   serializer_class = InvoiceSerializer
   permission_classes = [permissions.AllowAny]
   
@@ -80,7 +91,7 @@ class InvoiceCountByUser(generics.GenericAPIView,):
         count = queryset.count()
         return Response({'count', count})
 
-class InvoiceListByUserAndClient(generics.ListAPIView,):
+class InvoiceListByUserAndClient(generics.ListAPIView):
   serializer_class = InvoiceSerializer
   permission_classes = [permissions.AllowAny]
   
@@ -90,7 +101,7 @@ class InvoiceListByUserAndClient(generics.ListAPIView,):
         queryset = Invoice.objects.filter(supplier=user_id, client=client_id)
         return queryset
 
-class InvoiceCountByUserAndClient(generics.GenericAPIView,):
+class InvoiceCountByUserAndClient(generics.GenericAPIView):
   serializer_class = InvoiceSerializer
   permission_classes = [permissions.AllowAny]
   
