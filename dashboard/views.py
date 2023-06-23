@@ -12,7 +12,6 @@ from django.contrib.auth import authenticate
 from django.db.models import Sum
 from django.db.models import Count
 
-
 class CreateUser(generics.CreateAPIView):
     model = get_user_model()
     serializer_class = UserSerializer

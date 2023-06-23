@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import datetime, timedelta
+from datetime import date, timedelta
 
 class Address(models.Model):
     street = models.CharField(max_length = 100)
@@ -28,7 +28,7 @@ class Invoice(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     paid = models.BooleanField(default=False)
     create_date =  models.DateTimeField(auto_now_add=True)
-    due_date = models.DateField(default=datetime.now() + timedelta(weeks=2))
+    due_date = models.DateField(null = True, default=date.today() + timedelta(weeks=2))
 
     def __str__(self, value=None):
         if value is None:
