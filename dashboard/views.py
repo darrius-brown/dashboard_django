@@ -19,7 +19,7 @@ class CreateUser(generics.CreateAPIView):
 
 class CreateClient(generics.CreateAPIView):
     serializer_class = ClientSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, user_id, format=None):
         user_id = self.kwargs['user_id']
@@ -31,7 +31,7 @@ class CreateClient(generics.CreateAPIView):
 
 class CreateInvoice(generics.CreateAPIView):
     serializer_class = InvoiceSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, user_id, client_id, format=None):
         user_id = self.kwargs['user_id']
@@ -44,7 +44,7 @@ class CreateInvoice(generics.CreateAPIView):
 
 class ClientListByUser(generics.ListAPIView):
   serializer_class = ClientSerializer
-  permission_classes = [permissions.AllowAny]
+  permission_classes = [permissions.IsAuthenticated]
   
   def get_queryset(self):
         user_id = self.kwargs['user_id']
@@ -53,8 +53,7 @@ class ClientListByUser(generics.ListAPIView):
   
 class ClientStateCountByUser(generics.GenericAPIView):
     serializer_class = ClientSerializer
-    permission_classes = [permissions.AllowAny]
-
+    permission_classes = [permissions.IsAuthenticated]
     def get(self,  request, *args, **kwargs):
         user_id = self.kwargs['user_id']
         queryset = Client.objects.filter(supplier=user_id).values('address__state').annotate(count=Count('address__state')).order_by('-count')[:5]
@@ -63,7 +62,7 @@ class ClientStateCountByUser(generics.GenericAPIView):
   
 class ClientCountByUser(generics.GenericAPIView):
   serializer_class = ClientSerializer
-  permission_classes = [permissions.AllowAny]
+  permission_classes = [permissions.IsAuthenticated]
   
   def get(self, request, *args, **kwargs):
         user_id = self.kwargs['user_id']
@@ -73,8 +72,7 @@ class ClientCountByUser(generics.GenericAPIView):
   
 class InvoiceListByUser(generics.ListAPIView):
   serializer_class = InvoiceSerializer
-  permission_classes = [permissions.AllowAny]
-  
+  permission_classes = [permissions.IsAuthenticated]  
   def get_queryset(self):
         user_id = self.kwargs['user_id']
         queryset = Invoice.objects.filter(supplier=user_id)
@@ -82,8 +80,7 @@ class InvoiceListByUser(generics.ListAPIView):
 
 class InvoiceCountByUser(generics.GenericAPIView):
   serializer_class = InvoiceSerializer
-  permission_classes = [permissions.AllowAny]
-  
+  permission_classes = [permissions.IsAuthenticated]  
   def get(self, request, *args, **kwargs):
         user_id = self.kwargs['user_id']
         queryset = Invoice.objects.filter(supplier=user_id)
@@ -92,8 +89,7 @@ class InvoiceCountByUser(generics.GenericAPIView):
 
 class InvoiceListByUserAndClient(generics.ListAPIView):
   serializer_class = InvoiceSerializer
-  permission_classes = [permissions.AllowAny]
-  
+  permission_classes = [permissions.IsAuthenticated]  
   def get_queryset(self):
         user_id = self.kwargs['user_id']
         client_id = self.kwargs['client_id']
@@ -102,8 +98,7 @@ class InvoiceListByUserAndClient(generics.ListAPIView):
 
 class InvoiceCountByUserAndClient(generics.GenericAPIView):
   serializer_class = InvoiceSerializer
-  permission_classes = [permissions.AllowAny]
-  
+  permission_classes = [permissions.IsAuthenticated]  
   def get(self, request, *args, **kwargs):
         user_id = self.kwargs['user_id']
         client_id = self.kwargs['client_id']
@@ -113,8 +108,7 @@ class InvoiceCountByUserAndClient(generics.GenericAPIView):
 
 class InvoiceListByUserAndPaid(generics.ListAPIView):
   serializer_class = InvoiceSerializer
-  permission_classes = [permissions.AllowAny]
-
+  permission_classes = [permissions.IsAuthenticated]
   def get_queryset(self):
         user_id = self.kwargs['user_id']
         queryset = Invoice.objects.filter(supplier=user_id, paid=True)
@@ -122,8 +116,7 @@ class InvoiceListByUserAndPaid(generics.ListAPIView):
 
 class InvoiceListByUserAndUnpaid(generics.ListAPIView):
   serializer_class = InvoiceSerializer
-  permission_classes = [permissions.AllowAny]
-
+  permission_classes = [permissions.IsAuthenticated]
   def get_queryset(self):
         user_id = self.kwargs['user_id']
         queryset = Invoice.objects.filter(supplier=user_id, paid=False)
@@ -132,8 +125,7 @@ class InvoiceListByUserAndUnpaid(generics.ListAPIView):
 class ClientDetail(generics.RetrieveUpdateDestroyAPIView):
   
   serializer_class = ClientSerializer
-  permission_classes = [permissions.AllowAny]
-
+  permission_classes = [permissions.IsAuthenticated]
   def get_queryset(self):
         user_id = self.kwargs['user_id']
         queryset = Client.objects.filter(supplier=user_id)
@@ -149,8 +141,7 @@ class ClientDetail(generics.RetrieveUpdateDestroyAPIView):
 class InvoiceDetail(generics.RetrieveUpdateDestroyAPIView):
     
   serializer_class = InvoiceSerializer
-  permission_classes = [permissions.AllowAny]
-
+  permission_classes = [permissions.IsAuthenticated]
   def get_queryset(self):
         user_id = self.kwargs['user_id']
         queryset = Invoice.objects.filter(supplier=user_id)
@@ -166,8 +157,7 @@ class InvoiceDetail(generics.RetrieveUpdateDestroyAPIView):
 class UserDetail(generics.RetrieveAPIView):
   serializer_class = UserSerializer
   queryset = User.objects.all()
-  permission_classes = [permissions.AllowAny]
-
+  permission_classes = [permissions.IsAuthenticated]
 class LoginView(TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
 
@@ -197,8 +187,7 @@ class LoginView(TokenObtainPairView):
 
 class InvoiceCountByUserAndUnpaid(generics.GenericAPIView):
   serializer_class = InvoiceSerializer
-  permission_classes = [permissions.AllowAny]
-
+  permission_classes = [permissions.IsAuthenticated]
   def get(self, request, *args, **kwargs):
         user_id = self.kwargs['user_id']
         queryset = Invoice.objects.filter(supplier=user_id, paid=False)
@@ -207,8 +196,7 @@ class InvoiceCountByUserAndUnpaid(generics.GenericAPIView):
 
 class InvoiceCountByUserAndPaid(generics.GenericAPIView):
   serializer_class = InvoiceSerializer
-  permission_classes = [permissions.AllowAny]
-
+  permission_classes = [permissions.IsAuthenticated]
   def get(self, request, *args, **kwargs):
         user_id = self.kwargs['user_id']
         queryset = Invoice.objects.filter(supplier=user_id, paid=True)
@@ -217,8 +205,7 @@ class InvoiceCountByUserAndPaid(generics.GenericAPIView):
 
 class InvoiceSumByUserAndUnpaid(generics.GenericAPIView):
   serializer_class = InvoiceSerializer
-  permission_classes = [permissions.AllowAny]
-
+  permission_classes = [permissions.IsAuthenticated]
   def get(self, request, *args, **kwargs):
         user_id = self.kwargs['user_id']
         queryset = Invoice.objects.filter(supplier=user_id, paid=False).values_list('amount', flat=True)
@@ -227,8 +214,7 @@ class InvoiceSumByUserAndUnpaid(generics.GenericAPIView):
 
 class InvoiceSumByUserAndPaid(generics.GenericAPIView):
   serializer_class = InvoiceSerializer
-  permission_classes = [permissions.AllowAny]
-
+  permission_classes = [permissions.IsAuthenticated]
   def get(self, request, *args, **kwargs):
         user_id = self.kwargs['user_id']
         queryset = Invoice.objects.filter(supplier=user_id, paid=True).values_list('amount', flat=True)
