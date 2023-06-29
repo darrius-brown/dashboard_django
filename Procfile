@@ -1,1 +1,1 @@
-web: gunicorn example_django.wsgi
+web: gunicorn dashboard_django.wsgi
