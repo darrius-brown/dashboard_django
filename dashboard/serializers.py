@@ -88,6 +88,27 @@ class InvoiceSerializer(serializers.ModelSerializer):
             **validated_data)
         
         return invoice
+    
+    def update(self, instance, validated_data):
+        supplier_data = validated_data.pop('supplier', None)
+        client_data = validated_data.pop('client', None)
+
+        instance = super().update(instance, validated_data)
+
+        if supplier_data is not None:
+            supplier_serializer = self.fields['supplier']
+            supplier_instance = instance.supplier
+            supplier_instance = supplier_serializer.update(supplier_instance, supplier_data)
+            instance.supplier = supplier_instance
+
+        if client_data is not None:
+            client_serializer = self.fields['client']
+            client_instance = instance.client
+            client_instance = client_serializer.update(client_instance, client_data)
+            instance.client = client_instance
+
+        instance.save()
+        return instance
 
     class Meta:
         model = Invoice

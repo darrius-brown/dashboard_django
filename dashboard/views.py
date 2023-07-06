@@ -141,7 +141,7 @@ class ClientDetail(generics.RetrieveUpdateDestroyAPIView):
 class InvoiceDetail(generics.RetrieveUpdateDestroyAPIView):
     
   serializer_class = InvoiceSerializer
-  permission_classes = [permissions.IsAuthenticated]
+  permission_classes = [permissions.AllowAny]
   def get_queryset(self):
         user_id = self.kwargs['user_id']
         queryset = Invoice.objects.filter(supplier=user_id)
